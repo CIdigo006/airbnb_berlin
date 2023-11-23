@@ -29,7 +29,44 @@ models:
                         'Hotel room']
       
       - name: minimum_nights
-        description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
+        description: '{{ doc ("dim_listing_cleansed__minimum_nights") }}'
         tests:
           - positive_value
+
+  - name: dim_hosts_cleansed
+    description: This is the cleansed table that contains our Airbnb hosts
+    columns:
+      - name: host_id
+        description: This is the primary key for our hosts cleansed table
+        tests:
+          - not_null
+          - unique
+
+      - name: host_name
+        description: This is the name of all our different hosts
+        tests:
+          - not_null
+
+      - name: is_superhost
+        description: This lets us know whether or not a host is a superhost or not
+        tests:
+          - accepted_values:
+              values: ['t', 'f']
+
+  - name: fct_reviews
+    columns:
+      - name: listing_id
+        tests:
+          - relationships:
+              to: ref('dim_listings_cleansed')
+              field: listing_id
+
+      - name: reviewer_name
+        tests:
+          - not_null
+
+      - name: review_sentiment
+        tests:
+          - accepted_values:
+              values: ['positive', 'neutra', 'negative']
 
